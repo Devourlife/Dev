@@ -1,0 +1,46 @@
+/**
+ * There are <a href="https://github.com/ourlife/dev">dev</a> code generation
+ */
+package com.ourlife.dev.modules.oa.dao;
+
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Component;
+
+import com.ourlife.dev.common.persistence.BaseDao;
+import com.ourlife.dev.common.persistence.BaseDaoImpl;
+import com.ourlife.dev.modules.oa.entity.Leave;
+
+/**
+ * 请假DAO接口
+ * @author liuj
+ * @version 2013-04-05
+ */
+public interface LeaveDao extends LeaveDaoCustom, CrudRepository<Leave, Long> {
+
+	@Modifying
+	@Query("update Leave set delFlag='" + Leave.DEL_FLAG_DELETE + "' where id = ?1")
+	public int deleteById(Long id);
+	
+	@Modifying
+	@Query("update Leave set processInstanceId=?2 where id = ?1")
+	public int updateProcessInstanceId(Long id,String processInstanceId);
+}
+
+/**
+ * DAO自定义接口
+ * @author liuj
+ */
+interface LeaveDaoCustom extends BaseDao<Leave> {
+
+}
+
+/**
+ * DAO自定义接口实现
+ * @author liuj
+ */
+@Component
+class LeaveDaoImpl extends BaseDaoImpl<Leave> implements LeaveDaoCustom {
+
+}
